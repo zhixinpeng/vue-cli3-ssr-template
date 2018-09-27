@@ -45,35 +45,31 @@ if (window.__INITIAL_STATE__) {
 // 好处在于可以直接在数据准备就绪时，传入视图渲染完整内容
 // 但如果数据预取需要很长时间，用户在当前视图会感受到明显卡顿，因此使用此策略，建议提供一个数据加载指示器
 router.onReady(() => {
+  console.log('client entry')
   // 添加路由钩子函数，用于处理asyncData
   // 在初始路由resolve之后执行，以便我们不会二次预取已有的数据
   // 使用 `router.beforeResolve()`，以确保所有异步组件都resolve
   router.beforeResolve((to, from, next) => {
-    const matched = router.getMatchedComponents()
-    const prevMatched = router.getMatchedComponents(from)
+    const matchedComponents = router.getMatchedComponents(to)
+    const prevMatchedComponents = router.getMatchedComponents(from)
+    const activated = matchedComponents.filter((component, i) => component !== prevMatchedComponents[i])
 
     // 我们只关心非预渲染的组件
     // 所以我们对比它们，找出两个匹配列表的差异列表
-    let diffed = false
-    const activated = matched.filter((c, i) => {
-      return diffed || (diffed = (prevMatched[i] !== c))
-    })
+    const activatedAsyncHooks = activated.map(component => component && component.asyncData).filter(Boolean)
 
-    const asyncDataHooks = activated.map(c => c.asyncData).filter(_ => _)
-    if (!asyncDataHooks.length) {
+    if (!activatedAsyncHooks.length) {
       return next()
     }
 
     // 这里如果有加载指示器，就触发
     notify('开始预取数据...')
 
-    Promise.all(activated.map(c => {
-      if (c.asyncData) {
-        return c.asyncData({ store, route: to })
-      }
+    Promise.all(activatedAsyncHooks.map(hook => {
+      hook({ store, route: to })
     })).then(() => {
       // 停止加载指示器
-
+      console.log('ok')
       next()
     }).catch(next)
   })

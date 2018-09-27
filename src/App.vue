@@ -2,6 +2,7 @@
   <div id="app">
     <img src="./assets/logo.png" alt="">
     <div>
+      <router-link to="/">首页</router-link>
       <router-link to="/page1">page1</router-link>
       <router-link to="/page2">page2</router-link>
       <router-link to="/page3">404</router-link>

@@ -8,8 +8,7 @@ export function createRouter () {
     mode: 'history',
     routes: [
       {
-        path: '/',
-        redirect: '/page1'
+        path: '/'
       },
 
       {

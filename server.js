@@ -57,7 +57,7 @@ app.use(serveStatic('/dist', 'dist', {
 
 app.use(router.routes())
 
-app.listen(3000, err => {
+app.listen(3002, err => {
   if (err) throw new Error(err)
-  console.log('Server is running at http://localhost:3000')
+  console.log('Server is running at http://localhost:3002')
 })

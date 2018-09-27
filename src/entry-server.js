@@ -11,6 +11,7 @@ export default context => {
 
     // 等到router将可能的异步组件和钩子函数解析完
     router.onReady(() => {
+      console.log('server entry')
       const matchedComponents = router.getMatchedComponents()
       // 匹配不到的路由，执行reject函数，并返回404
       if (!matchedComponents.length) {
@@ -18,9 +19,9 @@ export default context => {
       }
 
       // 对所有匹配的路由器组件调用 `asyncData()`
-      Promise.all(matchedComponents.map(Component => {
-        if (Component && Component.asyncData) {
-          return Component.asyncData({
+      Promise.all(matchedComponents.map(component => {
+        if (component && component.asyncData) {
+          return component.asyncData({
             store,
             route: router.currentRoute
           })

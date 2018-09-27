@@ -37,5 +37,10 @@ module.exports = {
         optimizeSSR: false
       })
     })
+    config.plugin('html').tap(args => {
+      delete args[0].template
+      delete args[0].templateParameters
+      return args
+    })
   }
 }
